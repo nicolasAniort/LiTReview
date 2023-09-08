@@ -1,0 +1,50 @@
+
+{% extends "base.html" %}
+    {%block content%}
+    <div class="go-register">
+        <button id="signup-button">Inscrivez-vous maintenant</button>
+        <button id="login-button">Connectez-vous</button>
+    </div>
+    <div class="login-form">
+        <h2>Connectez-vous</h2>
+        <form id="login-form">
+            <label for="username">Nom d'utilisateur:</label>
+            <input type="text" id="username" name="username" required><br><br>
+            <label for="password">Mot de passe:</label>
+            <input type="password" id="password" name="password" required><br><br>
+            <button type="submit">Se connecter</button>
+        </form>
+    </div>
+
+    <script>
+        // Code JavaScript pour gérer les clics sur les boutons et la soumission de formulaires
+        document.getElementById("signup-button").addEventListener("click", function() {
+        });
+
+        document.getElementById("login-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            
+            // Utilisation de AJAX pour envoyer les données de connexion au serveur
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/login/", true);  // L'URL doit correspondre à la vue de login
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        // Rediriger l'utilisateur vers le flux ou toute autre page appropriée
+                        window.location.href = "/flux/";
+                    } else {
+                        // Afficher un message d'erreur à l'utilisateur
+                        console.log(response.message);
+                    }
+                }
+            };
+            
+            const data = JSON.stringify({username: username, password: password});
+            xhr.send(data);
+        });
+    </script>
+    {%endblock%}
