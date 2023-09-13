@@ -1,5 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import AuthenticationForm
+
 
 # creation de la vue hello.
 def hello(request):
@@ -7,16 +10,22 @@ def hello(request):
     return HttpResponse("Hello Django !")
 def home(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('flux')  # Redirect to the user's feed
-        else:
-            # Handle invalid login
-            pass
-    return render(request, 'accueil.html')
+        form = AuthenticationForm(request, request.POST)  # Créez une instance du formulaire
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('flux')  # Redirigez vers le flux de l'utilisateur
+            else:
+                # Gérer une connexion invalide
+                pass
+    else:
+        form = AuthenticationForm(request)  # Créez une instance du formulaire vide
+
+    return render(request, 'accueil.html', {'form': form})  # Passez le formulaire dans le contexte
+
 def registration(request):
     return render(request, 'listing/inscription.html')
 def flux(request):
@@ -35,7 +44,7 @@ def modify_review(request):
     return render(request, 'listing/modifier-critique.html')
 def modify_ticket(request):
     return render(request, 'listing/modifier-ticket.html')
-def delete_ticket(request):
+"""def delete_ticket(request):
     return render(request, 'listing/supprimer-ticket.html')
 def delete_review(request):
     return render(request, 'listing/supprimer-critique.html')   
@@ -57,3 +66,4 @@ def search(request):
     return render(request, 'listing/recherche.html')
 def search_result(request):
     return render(request, 'listing/resultat-recherche.html')
+"""

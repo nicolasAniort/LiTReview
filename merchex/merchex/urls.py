@@ -19,11 +19,10 @@ from listing import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('hello', views.hello),
+    #path('hello', views.hello),
     path('accueil', views.home),
     path('inscription', views.registration),
     path('flux', views.flux),
-    path('abonnement', views.subscription),
     path('abonnement', views.subscription),
     path('creation-ticket', views.create_ticket),
     path('nouvelle-critique', views.new_review),
