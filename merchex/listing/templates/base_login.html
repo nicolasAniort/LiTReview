@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{%load static%}
+<html>
+    <head>
+        <title>LITReview</title>
+        <link rel="stylesheet" href="{%static 'styles_login.css'%}"/>   
+    </head>    
+    <body>
+        <div class="container">
+            <h1>LITReview</h1>
+            <nav>
+              <ul>
+                <li><a href="#">Flux</a></li>
+                <li><a href="#">Posts</a></li>
+                <li><a href="#">Abonnements</a></li>
+                <li><a href="#">Se déconnecter</a></li>
+              </ul>
+            </nav>
+          </div>
+        <div class="scene">
+            {%block content %}{%endblock%}
+        </div>
+    </body>
+
+</html>        
+

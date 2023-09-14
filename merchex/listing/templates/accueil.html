@@ -2,17 +2,21 @@
 {%load static%}
 
     {%block content%}
-    <div class="go-register">
-        <form action="https://127.0.0.1:8000/inscription">
-            <button id="signup-button">Inscrivez-vous maintenant</button>
-        </form>
-    </div>
-    <div class="login-form">
-        <h2>Connectez-vous</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Se connecter</button>
-        </form>
+    <div class="blocForm">
+        <div class="go-register">
+            <h2>Inscrivez-vous maintenant</h2>    
+        </br>
+            <form action="http://127.0.0.1:8000/inscription">
+                <button id="signup-button">S'inscrire</button>
+            </form>
+        </div>
+        <div class="login-form">
+            <h2>Connectez-vous</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Se connecter</button>
+            </form>
+        </div>
     </div>
     {%endblock%}
