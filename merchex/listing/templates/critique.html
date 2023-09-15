@@ -1,0 +1,9 @@
+{% extends "base_login.html" %}
+{%load static%}
+
+{% block content %}
+    <h2>Créer une critique</h2>
+    <div class="critique">
+        {% include 'review-form.html' %} <!-- Inclure le formulaire de création de ticket -->
+    </div>
+{% endblock %}

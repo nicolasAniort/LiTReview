@@ -25,7 +25,7 @@ urlpatterns = [
     path('app/flux', views.flux, name='flux'),
     path('app/abonnement', views.subscription),
     path('app/creation-ticket', views.create_ticket),
-    path('app/nouvelle-critique', views.new_review),
+    path('app/nouvelle-critique', views.create_combined, name='nouvelle-critique'),
     path('app/reponse-critique', views.critic_response),
     path('app/mes-posts', views.my_posts),
     path('app/modifier-critique', views.modify_review),

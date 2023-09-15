@@ -14,6 +14,20 @@ class TicketForm(forms.ModelForm):
     class Meta:
         model = Ticket
         fields = ['title', 'description', 'image']
-        
-        # Personnalisation de l'étiquette du champ 'title'
-        title = forms.CharField(label='Titre du ticket')
+        labels = {
+            'title': 'Titre du ticket',  # Personnalisation de l'étiquette du champ 'title'
+        }
+    
+class ReviewForm(forms.Form):
+    title = forms.CharField(label='Titre de la critique')
+    RATING_CHOICES = [(str(i), i) for i in range(6)]
+    rating = forms.ChoiceField(
+        label='Note',
+        choices=RATING_CHOICES,
+        widget=forms.RadioSelect,
+    )
+    comment = forms.CharField(label='Commentaire', widget=forms.Textarea)
+    
+class CombinedForm(forms.Form):#formulaire combiné de TicketForm et ReviewForm
+    ticket_form = TicketForm()
+    review_form = ReviewForm()    

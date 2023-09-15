@@ -2,10 +2,8 @@
 {%load static%}
 
 {% block content %}
-    <h2>Créer un ticket</h2>
-    <form method="post" enctype="multipart/form-data" class="ticket">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Envoyer</button>
-    </form>
+    <h2>Créer un Ticket</h2>
+    <div class="ticket">
+        {% include 'ticket-form.html' %} <!-- Inclure le formulaire de création de ticket -->
+    </div>
 {% endblock %}
