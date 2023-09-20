@@ -1,7 +1,7 @@
 {%load static%}
 
 {% block content %}
-<form action="nouvelle-critique"method="post"/>
+<form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ combined_form.ticket_form.as_p }}
     {{ combined_form.review_form.as_p }}

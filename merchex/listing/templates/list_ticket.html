@@ -1,0 +1,16 @@
+{%load static%}
+    
+{% block content %}
+<ul class="list_ticket">
+    {% for ticket in tickets %}
+        <li>
+            <h2>{{ ticket.title }}</h2>
+            <p class="date">{{ ticket.time_created}}</p>
+            <p>{{ ticket.description }}</p>
+            <img src="{{ ticket.image.url }}" alt="{{ ticket.title }}" />
+            <a href="{% url 'modifier-ticket' ticket.id %}">Modifier</a>
+            <a href="#" class="delete-link" data-ticket-id="{{ ticket.id }}">Supprimer</a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}
