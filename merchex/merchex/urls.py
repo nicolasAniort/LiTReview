@@ -13,12 +13,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
-from django.contrib.auth import views as auth_views
-from listing import views
 from django.conf import settings
+from django.contrib import admin
+from listing import views
+from django.urls import path
+from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,14 +29,16 @@ urlpatterns = [
     path('app/abonnement', views.subscription),
     path('app/creation-ticket', views.create_ticket, name='creation-ticket'),
     path('app/nouvelle-critique', views.create_combined, name='nouvelle-critique'),
-    #path('app/reponse-critique', views.critic_response),
+    # path('app/reponse-critique', views.critic_response),
     path('app/mes-posts', views.my_posts, name='mes-posts'),
     path('app/modifier-critique', views.modify_review),
-    path('modifier-ticket/<int:ticket_id>/', views.modify_ticket, name='modifier-ticket'),
-    path('delete-ticket/<int:ticket_id>/', views.delete_ticket, name='delete_ticket'),
+    path('app/modifier-ticket/<int:ticket_id>/', views.modify_ticket, name='modifier-ticket'),
+    path('delete-ticket/<int:ticket_id>/', views.delete_ticket, name='delete-ticket'),
     path('accueil/', auth_views.LogoutView.as_view(), name='logout'),
-    
+    path('view-review/<int:review_id>/', views.view_review, name='view_review'),
+    path('ticket/<int:ticket_id>/', views.view_ticket, name='view_ticket'),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    

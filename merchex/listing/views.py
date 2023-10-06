@@ -1,12 +1,13 @@
 import django.urls
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from listing.forms import SignUpForm, ReviewForm, TicketForm
-from .models import Ticket, Review
+from .models import Ticket, Review, UserFollows
 from listing import views
+from itertools import chain
+from django.db.models import CharField, Value
 
 
 # CONNEXION / INSCRIPTION / DECONNEXION
@@ -42,14 +43,65 @@ def registration(request):
         form = SignUpForm()
     return render(request, 'inscription.html', {'form': form})
 
-
-#creation de la vue aprés connexion
+# FLUX 
+#creation de la vue FLUX
 @login_required
 def flux(request):
-    return render(request, 'flux.html')
+    reviews = get_users_viewable_reviews(request)
+    reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+    
+    tickets = get_users_viewable_tickets(request)
+    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
 
+    posts = sorted(
+        chain(reviews, tickets),
+        key=lambda post: post.time_created,
+        reverse=True
+    )
 
-#TICKET
+    return render(request, 'flux.html', context={'posts': posts})
+
+@login_required
+def get_users_viewable_reviews(request):
+    # Cette méthode récupère toutes les critiques visibles pour l'utilisateur
+    # et les critiques en réponse à celles de ses abonnements.
+    user = request.user
+    # Récupérer toutes les critiques de l'utilisateur actuellement connecté
+    reviews = Review.objects.filter(user=user, visibility=True)
+
+    # Récupérer les utilisateurs suivis par l'utilisateur actuellement connecté
+    followed_users = UserFollows.objects.filter(user=user).values_list('followed_user', flat=True)
+
+    # Récupérer toutes les critiques des utilisateurs suivis
+    reviews_by_followed_users = Review.objects.filter(user__in=followed_users, visibility=True)
+
+    # Combiner les critiques de l'utilisateur et celles des utilisateurs suivis
+    all_reviews = reviews | reviews_by_followed_users
+
+    return all_reviews
+
+@login_required
+def get_users_viewable_tickets(request):
+    # Cette méthode récupère tous les tickets visibles pour l'utilisateur
+    # et les tickets en réponse à ceux de ses abonnements.
+    user = request.user
+    # Récupérer tous les tickets de l'utilisateur actuellement connecté
+    tickets = Ticket.objects.filter(user=user, visibility=True)
+
+    # Récupérer les utilisateurs suivis par l'utilisateur actuellement connecté
+    followed_users = UserFollows.objects.filter(user=user).values_list('followed_user', flat=True)
+
+    # Récupérer tous les tickets des utilisateurs suivis
+    tickets_by_followed_users = Ticket.objects.filter(user__in=followed_users, visibility=True)
+
+    # Combiner les tickets de l'utilisateur et ceux des utilisateurs suivis
+    all_tickets = tickets | tickets_by_followed_users
+
+    return all_tickets
+
+    
+
+# TICKET
 # creation de la vue de creation d'un ticket simple 
 @login_required
 def create_ticket(request):
@@ -70,25 +122,35 @@ def create_ticket(request):
     return render(request, 'creation-ticket.html', {'ticket_form': ticket_form})
 
 @login_required
-def modify_ticket(request, ticked_id):
-    #ticket = get_object_or_404(Ticket, id=ticket_id, user=request.user)
-        #if request.method == 'POST':
-            # Gérez ici la logique de modification du ticket en fonction des données du formulaire
-            # Après la modification, redirigez l'utilisateur vers la page de détails du ticket ou une autre page appropriée
-            # ...
-    return render(request, 'modify_ticket.html', {'ticket': ticket})
+def modify_ticket(request, ticket_id):
+    # Récupérez le ticket à modifier
+    ticket = get_object_or_404(Ticket, id=ticket_id, user=request.user)
+
+    if request.method == 'POST':
+        form = TicketForm(request.POST, instance=ticket)  # Pré-remplissez le formulaire avec les données du ticket
+
+        if form.is_valid():
+            form.save()  # Enregistrez les modifications si le formulaire est valide
+            return redirect('mes-posts')  # Redirigez l'utilisateur vers la liste de ses tickets après la modification
+    else:
+        form = TicketForm(instance=ticket)  # Créez une instance du formulaire pré-rempli
+
+    return render(request, 'modifier-ticket.html', {'ticket': ticket, 'form': form})
 
 
 @login_required
 def delete_ticket(request, ticket_id):
     ticket = get_object_or_404(Ticket, id=ticket_id, user=request.user)
+    print("**",ticket.id)  # Utilisez ticket.id pour obtenir l'ID du ticket
 
     if request.method == 'POST':
         # Gérez ici la logique de suppression du ticket
         ticket.delete()
-        return redirect('mes-posts')  # Redirigez l'utilisateur vers la liste de ses tickets après la suppression
+        #mise a jour de la liste des tickets restants
+        remaining_tickets = Ticket.objects.filter(user=request.user)
+        return render(request, 'mes-posts.html', {'tickets': remaining_tickets})  # Redirigez l'utilisateur vers la liste de ses tickets après la suppression
 
-    return render(request, 'delete_ticket.html', {'ticket': ticket})
+    return render(request, 'mes-posts.html', {'ticket': ticket})
 
 
 #POSTS
@@ -128,8 +190,6 @@ def create_review(request):
 # creation de la vue combine critique et ticket
 @login_required
 def create_combined(request):
-    print(request)
-    print("coucou")
     if request.method == 'POST':
         ticket_form = TicketForm(request.POST, request.FILES)
         review_form = ReviewForm(request.POST)
@@ -161,26 +221,22 @@ def modify_review(request):
     return render(request, 'modifier-critique.html')
 
 
-    return render(request, 'modifier-ticket.html')
+@login_required
+def view_review(request, review_id):
+    # Récupérez la critique en fonction de son ID, ou renvoyez une erreur 404 si elle n'existe pas
+    review = get_object_or_404(Review, id=review_id)
 
-"""def delete_review(request):
-    return render(request, 'supprimer-critique.html')   
-def delete_account(request):
-    return render(request, 'supprimer-compte.html')
-def modify_account(request):
-    return render(request, 'modifier-compte.html')  
-def login(request):
-    return render(request, 'connexion.html')
-def logout(request):
-    return render(request, 'deconnexion.html')
-def ticket(request):
-    return render(request, 'ticket.html')
-def review(request):
-    return render(request, 'critique.html')
-def account(request):
-    return render(request, 'compte.html')
-def search(request):
-    return render(request, 'recherche.html')
-def search_result(request):
-    return render(request, 'resultat-recherche.html')
-"""
+    # Vous pouvez maintenant utiliser l'objet 'review' pour accéder aux données de la critique
+    # Par exemple, review.title, review.rating, review.comment, etc.
+
+    return render(request, 'nom_de_votre_template.html', {'review': review})
+
+@login_required
+def view_ticket(request, ticket_id):
+    # Récupérez la critique en fonction de son ID, ou renvoyez une erreur 404 si elle n'existe pas
+    ticket = get_object_or_404(Review, id=ticket_id)
+
+    # Vous pouvez maintenant utiliser l'objet 'review' pour accéder aux données de la critique
+    # Par exemple, review.title, review.rating, review.comment, etc.
+
+    return render(request, 'nom_de_votre_template.html', {'review': ticket})
