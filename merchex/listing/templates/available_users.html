@@ -1,0 +1,26 @@
+{% extends 'base_login.html' %}
+{%load static%}
+{% block content %}
+    <h2>Utilisateurs disponibles</h2>
+    <form method="post" class="user-search-form">
+        {% csrf_token %}
+        {{user_search_form.as_p}}
+        <!--{{ user_search_form.searched_query.label_tag }}
+        {{ user_search_form.searched_query }}-->
+        <button type="submit">Rechercher</button>
+    </form>
+
+    <h3>Utilisateurs abonnés</h3>
+    <ul>
+      {% for user_id in following_users %}
+        <li>{{ user_id }}</li>
+      {% endfor %}
+    </ul>
+    <h3>Utilisateurs qui vous suivent</h3>
+    <ul>
+      {% for follower in followers %}
+        <li>{{ follower.user }}</li>
+      {% endfor %}
+    </ul>
+  
+{% endblock %}

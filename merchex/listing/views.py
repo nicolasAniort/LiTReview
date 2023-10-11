@@ -8,6 +8,9 @@ from .models import Ticket, Review, UserFollows
 from listing import views
 from itertools import chain
 from django.db.models import CharField, Value
+from .models import Subscription
+from django.contrib.auth.models import User
+from .forms import UserSearchForm
 
 
 # CONNEXION / INSCRIPTION / DECONNEXION
@@ -240,3 +243,59 @@ def view_ticket(request, ticket_id):
     # Par exemple, review.title, review.rating, review.comment, etc.
 
     return render(request, 'nom_de_votre_template.html', {'review': ticket})
+
+#Abonnement
+@login_required
+def available_users(request):
+    # Récupérez tous les utilisateurs, à l'exception de l'utilisateur connecté
+    users = User.objects.exclude(id=request.user.id)
+    
+    # Récupérez les utilisateurs déjà abonnés par l'utilisateur connecté
+    subscriptions = Subscription.objects.filter(follower=request.user).values_list('following_id', flat=True)
+    
+    return render(request, 'available_users.html', {'users': users, 'subscriptions': subscriptions})
+
+@login_required
+def followers(request):
+    # Récupérez les utilisateurs qui suivent l'utilisateur connecté
+    followers = Subscription.objects.filter(following=request.user)
+    
+    return render(request, 'followers.html', {'followers': followers})
+
+@login_required
+def follow(request, user_id):
+    # Créez une instance de Subscription pour suivre un utilisateur
+    following_user = User.objects.get(id=user_id)
+    subscription = Subscription(follower=request.user, following=following_user)
+    subscription.save()
+    
+    return redirect('available_users')
+
+@login_required
+def unfollow(request, user_id):
+    # Supprimez une instance de Subscription pour cesser de suivre un utilisateur
+    following_user = User.objects.get(id=user_id)
+    Subscription.objects.filter(follower=request.user, following=following_user).delete()
+    
+    return redirect('available_users')
+
+def subscription(request):
+    user_search_form = UserSearchForm()
+    # Obtenez la liste des utilisateurs que l'utilisateur connecté suit déjà
+    following_users = Subscription.objects.filter(user=request.user).values_list('searched_user', flat=True)
+    # Obtenez la liste des utilisateurs qui suivent l'utilisateur connecté
+    followers = Subscription.objects.filter(searched_user=request.user)
+
+    if request.method == 'POST':
+        # Traitez le formulaire de recherche d'utilisateur
+        user_search_form = UserSearchForm(request.POST)
+        if user_search_form.is_valid():
+            # Récupérez l'utilisateur recherché à partir du formulaire
+            searched_user = user_search_form.cleaned_data['searched_query']
+
+            # Créez une instance de Subscription pour l'abonnement
+            subscription = Subscription(user=request.user, searched_user=searched_user)
+            subscription.save()
+
+    return render(request, 'available_users.html', {'user_search_form': user_search_form, 'following_users': following_users, 'followers': followers})
+
