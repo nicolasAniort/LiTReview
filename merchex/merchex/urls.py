@@ -29,7 +29,6 @@ urlpatterns = [
     path('app/abonnement', views.subscription),
     path('app/creation-ticket', views.create_ticket, name='creation-ticket'),
     path('app/nouvelle-critique', views.create_combined, name='nouvelle-critique'),
-    # path('app/reponse-critique', views.critic_response),
     path('app/mes-posts', views.my_posts, name='mes-posts'),
     path('app/modifier-critique', views.modify_review),
     path('app/modifier-ticket/<int:ticket_id>/', views.modify_ticket, name='modifier-ticket'),
@@ -41,6 +40,9 @@ urlpatterns = [
     path('app/followers/', views.followers, name='followers'),
     path('follow/<int:user_id>/', views.follow, name='follow'),
     path('unfollow/<int:user_id>/', views.unfollow, name='unfollow'),
+    path('app/search_users/', views.search_users, name='search_users'),
+    path("app/subscribe_user/", views.subscribe_user, name="subscribe_user"),
+    path('app/get_subscriptions/', views.get_subscriptions, name='get_subscriptions'),
 ]
 
 if settings.DEBUG:

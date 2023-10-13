@@ -231,7 +231,48 @@ span.helptext {
     color: #FF0000; /* Couleur rouge pour les messages d'erreur */
 }
 
-/* Ajout de styles pour les éléments de formulaire de type file (pour l'élément Image) */
+/* Styles pour les éléments de formulaire de type file (pour l'élément Image) */
 div.ticket input[type="file"] {
     font-size: 16px;
+}
+/* Styles pour le formulaire de recherche d'utilisateur */
+div.search-form {
+    width: 60%;
+    margin: auto;
+    text-align: center;
+    background-color: #f0f0f0;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+div.search-form label {
+    display: block;
+    text-align: left;
+    margin: 10px 0;
+    font-weight: bold;
+    font-size: 18px;
+    color: #303030;
+}
+
+div.search-form input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+div.search-form button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 3px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+div.search-form button:hover {
+    background-color: #45a049;
 }
