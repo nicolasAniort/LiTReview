@@ -8,8 +8,6 @@ from .models import Ticket, Review, UserFollows, Subscription, User
 from listing import views
 from itertools import chain
 from django.db.models import CharField, Value
-from .models import Subscription
-from django.contrib.auth.models import User
 from .forms import UserSearchForm
 from django.http import JsonResponse, HttpResponse
 
@@ -344,6 +342,7 @@ def search_users(request):
     search_query = request.GET.get('search_query', '')
     users = User.objects.filter(username__icontains=search_query).exclude(id=request.user.id)
     user_data = [{'id': user.id, 'username': user.username} for user in users]
+    print(user_data)
     return JsonResponse({'users': user_data})
     
 
@@ -361,11 +360,9 @@ def available_users(request):
         if search_term:
             users = users.filter(username__icontains=search_term)
 
-        # subscriptions = Subscription.objects.filter(follower=request.user).values_list('following_id', flat=True)
         subscriptions = Subscription.objects.filter(follower=request.user)
         subscription_data = []
         
-        # subscription_data = [sub for sub in subscriptions]
         for subscription in subscriptions:
             user_data = {
                 "id": subscription.following.id,
@@ -373,11 +370,7 @@ def available_users(request):
             }
             subscription_data.append(user_data)
 
-        #return render(request, 'available_users.html', {'users': users, 'subscriptions': subscriptions})
-        
-        # return JsonResponse({"subscriptions": subscription_data})
         return render(request, 'available_users.html', {"subscriptions": subscription_data})
-    
     
     elif request.method == 'POST':
         # Logique pour gérer l'abonnement à un utilisateur
@@ -446,13 +439,7 @@ def unfollow(request, user_id):
         ).delete()
 
     # Redirigez l'utilisateur vers la page app/available_user
-    return redirect("available_users")
-    """following_user = User.objects.get(id=user_id)
-    Subscription.objects.filter(
-        follower=request.user, following=following_user
-    ).delete()
-
-    return redirect("available_users")"""
+        return redirect("available_users")
 
 
 """Cette vue permet à l'utilisateur de cesser de suivre un autre 
@@ -503,7 +490,9 @@ Elle permet à l'utilisateur de rechercher
 @login_required
 def subscribe_user(request):
     print("subscribe_user appelé")
+    print("request", request)
     if request.method == "POST":
+        print("entree dans le if du post")
         user_id = request.POST.get("user_id")
         print("POST OK")
         if user_id:
@@ -534,8 +523,10 @@ def subscribe_user(request):
                 return JsonResponse({"error": str(e)})
 
     return JsonResponse({"error": "L'abonnement a échoué"})
+
 @login_required
 def get_subscriptions(request):
+    print(request)
     if request.user.is_authenticated:
         # Récupérez les abonnements de l'utilisateur connecté
         subscriptions = Subscription.objects.filter(follower=request.user)

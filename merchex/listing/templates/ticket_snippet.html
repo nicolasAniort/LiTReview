@@ -1,6 +1,11 @@
+{% load static %}
 <div class="ticket-snippet">
     <h3>{{ post.title }}</h3>
     <p class="date">{{ post.time_created }}</p>
     <p>{{ post.description }}</p>
-    <a href="{% url 'view_ticket' post.id %}">Voir le billet complet</a>
+    <img src="{% static post.image %}" alt="image du billet" />
+    <p>{{ post.image }}</p>
+
+    <p>{{ post.time_created }}</p>
+    <!--a href="{% url 'view_ticket' post.id %}">Voir le billet complet</a-->
 </div>

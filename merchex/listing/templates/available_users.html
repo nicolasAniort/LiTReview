@@ -1,15 +1,15 @@
 {% extends 'base_login.html' %}
 {% load static %}
 {% block content %}
+<!-- Section "recherche d'utilisateur" -->
 <h2>Recherche d'utilisateurs</h2>
 <form method="GET" id="search-form">
-    <input type="text" id="search-input" placeholder="Commencez à taper le nom..." name="search_query">
+    <input type="text" id="search-input" list="user-list" placeholder="Commencez à taper le nom..." name="search_query">
+    <datalist id="user-list">
+    <!-- Les options seront générées ici par JavaScript -->
+    </datalist>
+    <button id="subscribe-button">S'abonner</button>
 </form>
-
-<h3>Résultats de la recherche :</h3>
-<textarea id="search-results" rows="10" cols="40" readonly></textarea>
-<input type="hidden" id="selectedUserId" name="selectedUserId" value="">
-<button id="subscribe-button">S'abonner</button>
 <p></p>
 <!-- Section "Abonnements" -->
 <div class="subscriptions-section">
@@ -20,21 +20,5 @@
 </div>
 </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const searchInput = document.querySelector("#search-input");
-    const searchResults = document.querySelector("#search-results");
-    const searchForm = document.querySelector("#search-form");
 
-    searchInput.addEventListener("input", function() {
-        const searchQuery = searchInput.value;
-        fetch(`/app/search_users/?search_query=${searchQuery}`)
-            .then(response => response.json())
-            .then(data => {
-                const userResults = data.users.map(user => user.username).join('\n');
-                searchResults.value = userResults;
-            });
-    });
-});
-</script>
 {% endblock %}
