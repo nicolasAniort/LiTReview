@@ -1,87 +1,104 @@
+const userItems = document.querySelectorAll("[data-username]"); // Éléments liés aux utilisateurs
+const deleteLinks = document.querySelectorAll(".delete-link"); // Liens pour supprimer des éléments
+let dataList = document.querySelector("#user-list"); // Datalist pour les suggestions
+let users = []; // Stocke la liste des utilisateurs
+
 document.addEventListener("DOMContentLoaded", function() {
-    const deleteLinks = document.querySelectorAll(".delete-link");
-    const userSearchInput = document.querySelector("#search-input");
-    const userItems = document.querySelectorAll("[data-username]");
-    const subscribeButton = document.querySelector("#subscribe-button");
-    let dataList = document.querySelector("#user-list"); // L'élément datalist
-    let selectedUserId = null;
-    let users = [];
+// Sélectionnez les éléments HTML dont vous avez besoin
+const userSearchInput = document.querySelector("#searchInput"); // Champ de recherche
+console.log("initialisation",userSearchInput);
+const userDatalist = document.querySelector("#user-list");
+const subscribeButton = document.querySelector("#subscribe-button"); // Bouton d'abonnement
+let selectedUserId = null; // Stocke l'ID de l'utilisateur sélectionné
+let users = []; // Stocke la liste des utilisateurs
 
-    function getCSRFToken() {
-        const csrfCookie = document.cookie
-            .split(";")
-            .find(cookie => cookie.trim().startsWith("csrftoken="));
-        if (csrfCookie) {
-            return csrfCookie.split("=")[1];
-        }
-        return "";
-    }
+// ABONNEMENT: Fonction pour ajouter des options au datalist
+function populateDataList() {
+    userDatalist.innerHTML = "";
+    users.forEach(user => {
+        let option = document.createElement("option");
+        option.value = user.username;
+        option.id = user.id;
+        userDatalist.appendChild(option);
+    });
+}
 
-    // Fonction pour ajouter des options au datalist
-    function populateDataList() {
-        dataList.innerHTML = "";
-        users.forEach(user => {
-            let option = document.createElement("option");
-            option.value = user.username;
-            option.id = user.id;
-            dataList.appendChild(option);
+// ABONNEMENT: Écouteur d'événement pour le champ de recherche
+console.log("Abonnement",userSearchInput);
+userSearchInput.addEventListener("input", function() {
+    console.log("Écouteur d'événement pour le champ de recherche");
+    const searchTerm = userSearchInput.value;
+    console.log("searchTerm",searchTerm);
+    selectedUserId = null;
+    fetch(`/app/search_users/?search_query=${searchTerm}`)
+        .then(response => response.json())
+        .then(data => {
+            // Masquez tous les éléments d'utilisateur
+            userItems.forEach(userItem => {
+                userItem.style.display = "none";
+            });
+
+            // Affichez les utilisateurs correspondant à la recherche
+            data.users.forEach(user => {
+                const userId = user.id;
+                userItems.forEach(userItem => {
+                    if (userItem.getAttribute("data-username") === userId.toString()) {
+                        userItem.style.display = "block";
+                        userItem.addEventListener('click', function() {
+                            const userId = user.getAttribute('data-username');
+                            selectedUserId = userId;
+                        });
+                    }
+                });
+            });
+
+            // Mise à jour de la liste des utilisateurs et du datalist
+            users = data.users;
+            populateDataList();
+        })
+        .catch(error => {
+            console.error("Erreur lors de la recherche d'utilisateurs :", error);
+        });
+});
+
+// ABONNEMENT: Écouteur d'événement pour le bouton d'abonnement
+subscribeButton.addEventListener('click', function() {
+    console.log("Écouteur d'événement pour le bouton d'abonnement selectedUserId:", selectedUserId);
+    if (selectedUserId) {
+        // Effectuez une requête pour abonner l'utilisateur
+        fetch(`/app/subscribe_user/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCSRFToken(),
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `user_id=${selectedUserId}`,
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log("Subscription result:", result);
+        })
+        .catch(error => {
+            console.error("Erreur lors de l'abonnement :", error);
         });
     }
+});
 
-    // Écouteur d'événement pour le champ de recherche
-    userSearchInput.addEventListener("input", function() {
-        const searchTerm = userSearchInput.value;
-        selectedUserId = null;
-        fetch(`/app/search_users/?search_query=${searchTerm}`)
-            .then(response => response.json())
-            .then(data => {
-                userItems.forEach(userItem => {
-                    userItem.style.display = "none";
-                });
+// Fonction principale pour gérer les interactions sur la page une fois que le document est chargé
+document.addEventListener("DOMContentLoaded", function() {
+    // Sélectionnez les éléments HTML dont vous avez besoin
+    
 
-                data.users.forEach(user => {
-                    const userId = user.id;
-                    userItems.forEach(userItem => {
-                        if (userItem.getAttribute("data-username") === userId.toString()) {
-                            userItem.style.display = "block";
-                            userItem.addEventListener('click', function() {
-                                const userId = user.getAttribute('data-username');
-                                selectedUserId = userId;
-                            });
-                        }
-                    });
-                });
-
-                // Mise à jour de la liste des utilisateurs et du datalist
-                users = data.users;
-                populateDataList();
-            })
-            .catch(error => {
-                console.error("Erreur lors de la recherche d'utilisateurs :", error);
-            });
-    });
-
-    // Écouteur d'événement pour le bouton d'abonnement
-    subscribeButton.addEventListener('click', function() {
-        console.log("selectedUserId:", selectedUserId);
-        if (selectedUserId) {
-            fetch(`/app/subscribe_user/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': getCSRFToken(),
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `user_id=${selectedUserId}`,
-            })
-            .then(response => response.json())
-            .then(result => {
-                console.log("Subscription result:", result);
-            })
-            .catch(error => {
-                console.error("Erreur lors de l'abonnement :", error);
-            });
-        }
-    });
+// Fonction pour obtenir le jeton CSRF depuis les cookies
+function getCSRFToken() {
+    const csrfCookie = document.cookie
+        .split(";")
+        .find(cookie => cookie.trim().startsWith("csrftoken="));
+    if (csrfCookie) {
+        return csrfCookie.split("=")[1];
+    }
+    return "";
+}
 
     // Lorsque la page est chargée, récupérez les abonnements et ajoutez-les à la liste des abonnements
     fetch("/app/get_subscriptions/")
@@ -95,6 +112,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 listItem.textContent = username;
                 const unsubscribeButton = document.createElement("button");
                 unsubscribeButton.textContent = "Désabonner";
+
+                // Écouteur d'événement pour le bouton de désabonnement
                 unsubscribeButton.addEventListener("click", function() {
                     fetch(`/app/unfollow/${userId}`, {
                         method: "POST",
@@ -120,27 +139,51 @@ document.addEventListener("DOMContentLoaded", function() {
             console.error("Erreur lors de la récupération des abonnements :", error);
         });
 });
-// fonction gerant labonnement à un utilisateur
 
+// Nouvelle fonction pour gérer les interactions avec le champ de recherche
 document.addEventListener("DOMContentLoaded", function() { 
-    //L'événement "DOMContentLoaded" est utilisé pour s'assurer que le script
-    // est exécuté une fois que le document HTML a été entièrement chargé
-      const searchInput = document.querySelector("#search-input");
-      console.log(searchInput);
-    // Représente l'élément HTML avec l'ID "search-input"
-      const userDatalist = document.querySelector("#user-list");
-      console.log(userDatalist);
-      // Représente l'élément HTML avec l'ID "search-results"
-      const searchForm = document.querySelector("#search-form");
-      console.log(searchForm);
-      // Représente l'élément HTML avec l'ID "search-form"
-      searchInput.addEventListener("input", function() {
-          const searchQuery = searchInput.value;
-          fetch(`/app/search_users/?search_query=${searchQuery}`)
-              .then(response => response.json())
-              .then(data => {
-                  const userResults = data.users.map(user => user.username).join('\n');
-                  userDatalist.innerHTML = userResults;
-              });
-      });
-  });
+    const searchInput = document.querySelector("#searchInput");
+    const userDatalist = document.querySelector("#user-list");
+    const searchForm = document.querySelector("#search-form");
+    searchInput.addEventListener("input", function() {
+        const searchQuery = searchInput.value;
+        fetch(`/app/search_users/?search_query=${searchQuery}`)
+            .then(response => response.json())
+            .then(data => {
+                const userResults = data.users.map(user => user.username).join('\n');
+                userDatalist.innerHTML = userResults;
+            });
+    });
+});
+
+// Écouteur d'événement pour le bouton d'abonnement
+
+searchInput = document.querySelector("#searchInput");
+console.log(searchInput);
+selectedUserId = searchInput.id; // Stocke l'ID de l'utilisateur sélectionné
+subscribeButton.addEventListener('click', function() {
+    if (selectedUserId) {
+        // Effectuez une requête pour enregistrer l'abonnement de l'utilisateur
+        fetch(`/app/subscribe_user/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCSRFToken(),
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `user_id=${selectedUserId}`,
+        })
+        .then(response => response.json())
+        .then(result => {
+            // Gérez la réponse du serveur, par exemple, affichez un message de confirmation
+            console.log("Subscription result:", result);
+            alert('Abonnement réussi !');
+        })
+        .catch(error => {
+            console.error("Erreur lors de l'abonnement :", error);
+            alert('Erreur lors de l\'abonnement.');
+        });
+    } else {
+        alert('Veuillez sélectionner un utilisateur avant de vous abonner.');
+    }
+});
+});

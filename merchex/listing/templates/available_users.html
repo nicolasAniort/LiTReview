@@ -2,9 +2,9 @@
 {% load static %}
 {% block content %}
 <!-- Section "recherche d'utilisateur" -->
-<h2>Recherche d'utilisateurs</h2>
+<h2>Recherche d'utilisateurs pour abonnement</h2>
 <form method="GET" id="search-form">
-    <input type="text" id="search-input" list="user-list" placeholder="Commencez à taper le nom..." name="search_query">
+    <input type="text" id="searchInput" list="user-list" placeholder="Commencez à taper le nom..." name="search_query">
     <datalist id="user-list">
     <!-- Les options seront générées ici par JavaScript -->
     </datalist>
@@ -13,7 +13,7 @@
 <p></p>
 <!-- Section "Abonnements" -->
 <div class="subscriptions-section">
-  <h3>Abonnements</h3>
+  <h3>Abonnements actifs</h3>
   <ul id="subscriptions-list">
       <!-- La liste des abonnements sera générée ici par JavaScript -->
   </ul>
