@@ -1,11 +1,15 @@
 {% load static %}
 <div class="ticket-snippet">
     <h3>{{ post.title }}</h3>
+    <p>Auteur : {{ post.user.username }}</p>
     <p class="date">{{ post.time_created }}</p>
     <p>{{ post.description }}</p>
-    <img src="{% static post.image %}" alt="image du billet" />
-    <p>{{ post.image }}</p>
-
-    <p>{{ post.time_created }}</p>
-    <!--a href="{% url 'view_ticket' post.id %}">Voir le billet complet</a-->
+    {% if post.content_type == "TICKET" and post.image %}
+            <img src="{{ post.image.url }}" alt="{{ post.title }}">
+    {% endif %}
+    {% if user.is_authenticated and post.user != user %}
+        <a href="{% url 'nouvelle-critique-2' post.id %}" class="btn btn-primary">Créer une critique</a>
+    {% endif %}
+    <p></p>
+    <p class="date">{{ post.time_created }}</p>
 </div>

@@ -1,4 +1,3 @@
-const userItems = document.querySelectorAll("[data-username]"); // Éléments liés aux utilisateurs
 const deleteLinks = document.querySelectorAll(".delete-link"); // Liens pour supprimer des éléments
 let dataList = document.querySelector("#user-list"); // Datalist pour les suggestions
 let users = []; // Stocke la liste des utilisateurs
@@ -17,11 +16,14 @@ function populateDataList() {
     userDatalist.innerHTML = "";
     users.forEach(user => {
         let option = document.createElement("option");
+        option.setAttribute("data-username", user.username);
         option.value = user.username;
         option.id = user.id;
         userDatalist.appendChild(option);
     });
 }
+const userItems = document.querySelectorAll("option"); // Éléments liés aux utilisateurs
+console.log("userItems",userItems);
 
 // ABONNEMENT: Écouteur d'événement pour le champ de recherche
 console.log("Abonnement",userSearchInput);
@@ -30,10 +32,13 @@ userSearchInput.addEventListener("input", function() {
     const searchTerm = userSearchInput.value;
     console.log("searchTerm",searchTerm);
     selectedUserId = null;
+    console.log("selectedUserId réinitialisé à null.");
     fetch(`/app/search_users/?search_query=${searchTerm}`)
         .then(response => response.json())
         .then(data => {
             // Masquez tous les éléments d'utilisateur
+            console.log("data",data);
+            console.log("userItems",userItems);
             userItems.forEach(userItem => {
                 userItem.style.display = "none";
             });
@@ -41,16 +46,26 @@ userSearchInput.addEventListener("input", function() {
             // Affichez les utilisateurs correspondant à la recherche
             data.users.forEach(user => {
                 const userId = user.id;
-                userItems.forEach(userItem => {
-                    if (userItem.getAttribute("data-username") === userId.toString()) {
-                        userItem.style.display = "block";
-                        userItem.addEventListener('click', function() {
-                            const userId = user.getAttribute('data-username');
-                            selectedUserId = userId;
-                        });
-                    }
-                });
+                selectedUserId = userId;
+                console.log("utilisateur correspondant à la rechercheid1", userId);
+                console.log("utilisateur correspondant à la rechercheitem1", userItems);
+                //userId = user.getAttribute('id');
+                selectedUserId = userId;
+                console.log("utilisateur correspondant à la recherche select", selectedUserId);
             });
+            });
+        });
+                //userItems.forEach(userItem => {
+                //    console.log("utilisateur correspondant à la recherche item", userItem);
+                //    console.log("utilisateur correspondant à la recherche item", userItem);
+                //    console.log("utilisateur correspondant à la recherche ID", userId.toString());
+                ///    userItem.style.display = "block";
+                //    console.log("utilisateur correspondant à la recherche item", userItem);
+                //    userItem.addEventListener('click', function() {
+
+                    
+                //}
+            
 
             // Mise à jour de la liste des utilisateurs et du datalist
             users = data.users;
@@ -59,11 +74,13 @@ userSearchInput.addEventListener("input", function() {
         .catch(error => {
             console.error("Erreur lors de la recherche d'utilisateurs :", error);
         });
-});
+        console.log("fin", selectedUserId);
+;
 
 // ABONNEMENT: Écouteur d'événement pour le bouton d'abonnement
 subscribeButton.addEventListener('click', function() {
-    console.log("Écouteur d'événement pour le bouton d'abonnement selectedUserId:", selectedUserId);
+    console.log("Bouton d'abonnement cliqué.");
+    console.log("selectedUserId avant la requête :", selectedUserId);
     if (selectedUserId) {
         // Effectuez une requête pour abonner l'utilisateur
         fetch(`/app/subscribe_user/`, {
@@ -80,7 +97,11 @@ subscribeButton.addEventListener('click', function() {
         })
         .catch(error => {
             console.error("Erreur lors de l'abonnement :", error);
+            alert('Erreur lors de l\'abonnement.');
         });
+    } else {
+        console.log("Aucun utilisateur sélectionné pour l'abonnement.");
+        alert('Veuillez sélectionner un utilisateur avant de vous abonner.');
     }
 });
 
@@ -142,6 +163,7 @@ function getCSRFToken() {
 
 // Nouvelle fonction pour gérer les interactions avec le champ de recherche
 document.addEventListener("DOMContentLoaded", function() { 
+    console.log("Le document est chargé.");
     const searchInput = document.querySelector("#searchInput");
     const userDatalist = document.querySelector("#user-list");
     const searchForm = document.querySelector("#search-form");
@@ -159,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function() {
 // Écouteur d'événement pour le bouton d'abonnement
 
 searchInput = document.querySelector("#searchInput");
-console.log(searchInput);
+console.log("searchInput :", searchInput);
 selectedUserId = searchInput.id; // Stocke l'ID de l'utilisateur sélectionné
 subscribeButton.addEventListener('click', function() {
     if (selectedUserId) {
@@ -186,4 +208,8 @@ subscribeButton.addEventListener('click', function() {
         alert('Veuillez sélectionner un utilisateur avant de vous abonner.');
     }
 });
-});
+
+//LISTE DES USER SUIVIS: generation de la liste
+
+//LISTE DES USER SUIVIS: desincription
+

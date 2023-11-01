@@ -3,22 +3,29 @@
 {% block content %}
 <!-- Section "recherche d'utilisateur" -->
 <h2>Recherche d'utilisateurs pour abonnement</h2>
-<form method="GET" id="search-form">
-    <input type="text" id="searchInput" list="user-list" placeholder="Commencez à taper le nom..." name="search_query">
+<form hx-get="/app/search_users/" hx-trigger="input changed delay:300ms" hx-swap="outerHTML">
+    <input type="text" list="user-list" placeholder="Commencez à taper le nom..." name="search_query">
     <datalist id="user-list">
-    <!-- Les options seront générées ici par JavaScript -->
+        <!-- Les options seront générées ici par le serveur -->
     </datalist>
-    <button id="subscribe-button">S'abonner</button>
+    <button type="submit">
+        {% if user.id in subscriptions_ids %}Se désabonner{% else %}S'abonner{% endif %}
+    </button>
 </form>
-<p></p>
+<!-- Intégration du formulaire de recherche d'utilisateur -->
+<form method="post" action="{% url 'subscription' %}">
+    {% csrf_token %}
+    {{ user_search_form.as_p }}
+    <button type="submit">Rechercher et s'abonner</button>
+</form>
+<div id="subscription-result">
+    <!-- Le résultat de l'opération sera inséré ici -->
+</div>
 <!-- Section "Abonnements" -->
 <div class="subscriptions-section">
-  <h3>Abonnements actifs</h3>
-  <ul id="subscriptions-list">
-      <!-- La liste des abonnements sera générée ici par JavaScript -->
-  </ul>
+    <h3>Abonnements actifs</h3>
+    <div hx-get="/app/get_subscriptions/" hx-swap="outerHTML">
+        <!-- La liste des abonnements sera générée ici par le serveur -->
+    </div>
 </div>
-</div>
-
-
 {% endblock %}

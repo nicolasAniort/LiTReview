@@ -2,5 +2,6 @@
     <h3>{{ post.title }}</h3>
     <p class="date">{{ post.time_created }}</p>
     <p>{{ post.content }}</p>
-    <a href="{% url 'view_review' post.id %}">Voir la critique complète</a>
+    <img src="{{ post.image.url }}" />   
+    <!--a href="{% url 'view_review' post.id %}">Voir la critique complète</a-->
 </div>

@@ -1,0 +1,47 @@
+{% extends 'base_login.html' %}
+{% load static %}
+{% block content %}
+    <h2>Recherche d'utilisateurs et abonnement</h2>
+    <p>Recherchez des utilisateurs et abonnez-vous à eux.</p>
+    <form>
+        <input type="text" id="search_query" name="search_query" list="recherche_utilisateur">
+            <datalist id="recherche_utilisateur" hx-swap="innerHTML">
+                <option value=""></option>
+                <template hx-repeat="user in user_list">
+                    <option value="{{ user.name }}" data-id="{{ user.id }}"></option>
+                </template>
+            </datalist>
+        <button type="submit">Envoyer</button>
+    </form>
+    <p></p>
+    
+    <h3>Utilisateurs que vous suivez</h3>
+    <ul>
+        {% for user in following_users %}
+            <li>{{ user.username }}</li>
+        {% empty %}
+            <li>Vous ne suivez aucun utilisateur pour le moment.</li>
+        {% endfor %}
+    </ul>
+    
+    <h3>Utilisateurs qui vous suivent</h3>
+    <ul>
+        {% for user in followers %}
+            <li>{{ user.user.username }}</li>
+        {% empty %}
+            <li>Aucun utilisateur ne vous suit pour le moment.</li>
+        {% endfor %}
+    </ul>
+    
+    <div id="subscription-result">
+        <!-- Le résultat de l'opération sera inséré ici -->
+    </div>
+    
+    <!-- Section "Abonnements" -->
+    <div class="subscriptions-section">
+        <h3>Abonnements actifs</h3>
+        <div hx-get="/app/get_subscriptions/" hx-swap="outerHTML">
+            <!-- La liste des abonnements sera générée ici par le serveur -->
+        </div>
+    </div>
+{% endblock %}

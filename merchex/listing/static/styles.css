@@ -25,9 +25,7 @@ div.scene {
     background-color: darkgrey;
     height: auto;
 }
-
 div.blocForm {
-    display: flex;
     justify-content: center;
     height: 100%;
     border-color: black;
@@ -40,15 +38,15 @@ div.blocForm {
 
 
 div.go-register{
-    
-    width: 50%;
+    float: left;
+    width: 45%;
     text-decoration: none;
     font-size: 20px;
     margin-left: 10px;
 }
 div.login-form{
-    
-    width: 50%;
+    float: right;
+    width: 45%;
     text-decoration: none;
     font-size: 20px;
     margin-left: 10px;
@@ -149,6 +147,7 @@ div.go-register button {
     border: none;
     cursor: pointer;
     transition: background-color 0.3s;
+    margin-top: 100px;
 }
 
 div.login-form button:hover {

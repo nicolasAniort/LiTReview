@@ -1,0 +1,15 @@
+{% extends "base_login.html" %}
+{%load static%}
+
+{% block content %}
+  <h2>{{ ticket.title }}</h2>
+  <p>{{ ticket.description }}</p>
+  <!-- Affichez ici d'autres détails sur le ticket si nécessaire -->
+
+  <h2>Créer une critique</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Soumettre</button>
+  </form>
+{% endblock %}

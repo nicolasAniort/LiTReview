@@ -2,8 +2,26 @@
 {% load static %}
 {%block content%}
 <div class="flux">
-    <a href="{% url 'creation-ticket' %}" class="btn btn-primary">Créer un nouveau ticket</a>
-    <h2>Flux</h2>
+    <div class="btn-create-ticket">
+        <a href="{% url 'creation-ticket' %}" class="btn btn-primary">Demander une critique</a>
+    </div>
+    <div class="btn-create-critique">
+        <a href="{% url 'nouvelle-critique' %}" class="btn btn-primary">Créer une critique</a>
+    </div>
+        <h2>Flux</h2>
+        {% for ticket in tickets %}
+    <div class="ticket">
+        <h3>{{ ticket.title }}</h3>
+        <p>{{ ticket.description }}</p>
+        {% if ticket.image %}
+            <img src="{{ ticket.image.url }}" alt="{{ ticket.title }}">
+        {% endif %}
+        <p class="date">{{ ticket.time_created }}</p>
+        {% if ticket.can_create_review %}
+            <a href="{% url 'nouvelle-critique-2' ticket.id %}" class="btn btn-primary">Créer une critique</a>
+        {% endif %}
+    </div>
+{% endfor %}
     {% for post in posts %}
         {% if post.content_type == 'TICKET' %}
             {% include 'ticket_snippet.html' %}

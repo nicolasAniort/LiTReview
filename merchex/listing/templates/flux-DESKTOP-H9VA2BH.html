@@ -1,0 +1,15 @@
+{% extends "base_login.html" %}
+{% load static %}
+{%block content%}
+<div class="flux">
+    <a href="{% url 'creation-ticket' %}" class="btn btn-primary">Créer un nouveau ticket</a>
+    <h2>Flux</h2>
+    {% for post in posts %}
+        {% if post.content_type == 'TICKET' %}
+            {% include 'ticket_snippet.html' %}
+        {% elif post.content_type == 'REVIEW' %}
+            {% include 'review_snippet.html' %}
+        {% endif %}
+    {% endfor %} 
+</div>    
+    {%endblock%}    

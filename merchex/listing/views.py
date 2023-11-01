@@ -1,14 +1,14 @@
-import django.urls
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from listing.forms import SignUpForm, ReviewForm, TicketForm
 from .models import Ticket, Review, UserFollows, Subscription, User
-from listing import views
 from itertools import chain
+from django.db import IntegrityError
 from django.db.models import CharField, Value
-from .forms import UserSearchForm
+from .forms import UserSearchForm, ReviewForm
 from django.http import JsonResponse, HttpResponse
 
 # CONNEXION / INSCRIPTION / DECONNEXION
@@ -153,26 +153,29 @@ def create_ticket(request):
         ticket_form = TicketForm(request.POST, request.FILES)
         if ticket_form.is_valid():
             ticket = ticket_form.save(commit=False)
-            ticket.user = (
-                request.user
-            )  # Associez le ticket à l'utilisateur actuellement connecté
+            ticket.user = request.user
+            if 'image' in request.FILES:
+                ticket.image = request.FILES['image']
             ticket.save()
-            if django.urls.re_path(
-                r"^app/creation-ticket/", views.create_ticket, name="creation-ticket"
-            ):
-                return redirect("flux")
-        """ Redirigez vers la page de app/flux après avoir créé le ticket sinon rester sur la page 
-            app/nouvelle-critique/ 
-        """
-    # Si la méthode de la requête n'est pas POST ou si le formulaire n'est pas valide, continuez ici.
-    ticket_form = TicketForm()
+            messages.success(request, "Votre ticket a été créé avec succès.")
+            return redirect("flux")
+    else:
+        ticket_form = TicketForm()
 
-    return render(request, "creation-ticket.html", {"ticket_form": ticket_form})
+    context = {"ticket_form": ticket_form}
+    return render(request, "create_ticket.html", context)
+    """ Redirigez vers la page de app/flux après avoir créé le ticket sinon rester sur la page 
+        app/nouvelle-critique/ 
+    """
+    # Si la méthode de la requête n'est pas POST ou si le formulaire n'est pas valide, continuez ici.
+    # ticket_form = TicketForm()
+    # return render(request, "creation-ticket.html", {"ticket_form": ticket_form})
 
 
 """Cette vue permet à l'utilisateur de créer un nouveau ticket. Si la méthode
 HTTP est POST et le formulaire est valide, le ticket est créé. Sinon, le 
 formulaire vide est affiché."""
+
 
 @login_required
 def modify_ticket(request, ticket_id):
@@ -227,7 +230,15 @@ Sinon, la page "mes-posts" est affichée."""
 def my_posts(request):
     # Récupérer les tickets de l'utilisateur actuellement connecté
     tickets = Ticket.objects.filter(user=request.user)
-    print(tickets)
+    print("fonction my_posts", tickets)
+    for ticket in tickets:
+        print(ticket.id)
+        print(ticket.title)
+        print(ticket.description)
+        print(ticket.image)
+        print(ticket.visibility)
+        print(ticket.time_created)
+        
     return render(request, "mes-posts.html", {"tickets": tickets})
 
 
@@ -235,9 +246,46 @@ def my_posts(request):
 connecté."""
 
 # CRITIQUE
+@login_required
+def nouvelle_critique_2(request, ticket_id):
+    ticket = get_object_or_404(Ticket, id=ticket_id)
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            try: 
+                critique = form.save(commit=False)
+                critique.ticket = ticket
+                critique.user = request.user
+                critique.save()
+                return redirect('flux')
+            except IntegrityError:
+                messages.error(request, "Vous avez déjà critiqué ce ticket.")
+                return redirect('flux')
+    else:
+        form = ReviewForm()
+    return render(request, 'nouvelle-critique-2.html', {'ticket': ticket, 'form': form})
+
+
 # creation de la vue de creation d'une critique simple
 @login_required
-def create_review(request):
+def create_review(request, ticket_id):
+    ticket = get_object_or_404(Ticket, id=ticket_id)
+
+    if request.method == "POST":
+        review_form = ReviewForm(request.POST)
+        if review_form.is_valid():
+            review = review_form.save(commit=False)
+            review.user = request.user
+            review.ticket = ticket
+            review.save()
+            messages.success(request, "Votre critique a été créée avec succès.")
+            return redirect("view_ticket", ticket_id=ticket.id)
+    else:
+        review_form = ReviewForm()
+
+    context = {"ticket": ticket, "review_form": review_form}
+    return render(request, "create_review.html", context)
+"""def create_review(request):
     # Initialisation du formulaire de ticket
     ticket_form = TicketForm()
 
@@ -260,7 +308,7 @@ def create_review(request):
         request,
         "nouvelle-critique.html",
         {"review_form": review_form, "ticket_form": ticket_form},
-    )
+    )"""
 
 
 """Cette vue permet à l'utilisateur de créer une nouvelle critique.

@@ -1,7 +1,10 @@
 from django import forms
+from django.conf import settings
+from django.core.files.base import ContentFile
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Ticket, Subscription
+from .models import Ticket, Subscription, Review
+import os
 
 
 # Formulaire d'inscription pour les utilisateurs
@@ -27,20 +30,45 @@ class TicketForm(forms.ModelForm):
             #du champ 'title'
         }
 
-
+    def clean(self):
+        cleaned_data = super().clean()
+        image = cleaned_data.get("image")
+        if not image:
+            # Si l'utilisateur n'a pas fourni d'image, ajoutez une image par défaut.
+            # default_image_path = None
+            if settings.STATIC_ROOT:
+                default_image_path = os.path.join(settings.STATIC_ROOT, "default", "default_ticket_image.png")
+                print(default_image_path)
+            if default_image_path and os.path.exists(default_image_path):
+                print("default image exists")
+                with open(default_image_path, "rb") as f:
+                    image_data = f.read()
+                image = ContentFile(image_data, name="default_ticket_image.png")
+                cleaned_data["image"] = image
+        return cleaned_data
 # Formulaire pour soumettre une critique
-class ReviewForm(forms.Form):
-    # ReviewForm est un formulaire pour soumettre une critique.
-    # Il inclut des champs personnalisés tels que title, rating, et comment.
-    title = forms.CharField(label="Titre de la critique")
+
+
+class ReviewForm(forms.ModelForm):
     RATING_CHOICES = [(str(i), i) for i in range(6)]
     rating = forms.ChoiceField(
         label="Note",
         choices=RATING_CHOICES,
         widget=forms.RadioSelect,
     )
-    comment = forms.CharField(label="Commentaire", widget=forms.Textarea)
+    headline = forms.CharField(label="Titre de la critique")
+    body = forms.CharField(label="Commentaire", widget=forms.Textarea)
 
+    class Meta:
+        model = Review
+        fields = ['headline', 'rating', 'body']
+        labels = {
+            'headline': 'Titre de la critique',
+            'body': 'Commentaire',
+        }
+        widgets = {
+            'body': forms.Textarea,
+        }
 
 # Formulaire combiné de TicketForm et ReviewForm
 class CombinedForm(forms.Form):
@@ -63,21 +91,16 @@ class SubscriptionForm(forms.ModelForm):
 
 # Formulaire de recherche d'utilisateurs
 class UserSearchForm(forms.Form):
-    # UserSearchForm est un formulaire pour rechercher des utilisateurs
-    # par leur nom d'utilisateur.
     search_query = forms.CharField(
         label='Recherche d\'utilisateur',
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Commencez à taper le nom...'}),
         required=False
     )
-    selected_user_id = forms.IntegerField(widget=forms.HiddenInput, required=False)
-    
 
     def search_users(self):
         query = self.cleaned_data.get("search_query")
         if query:
-            # Effectuez la recherche d'utilisateurs en fonction du champ 
-            # 'username'Vous pouvez personnaliser cela pour rechercher 
-            # d'autres champs si nécessaire
+            # Effectuez la recherche d'utilisateurs en fonction du champ 'username'
+            # Vous pouvez personnaliser cela pour rechercher d'autres champs si nécessaire
             return User.objects.filter(username__icontains=query)
         return User.objects.none()

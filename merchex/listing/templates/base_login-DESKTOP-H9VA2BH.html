@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+{%load static%}
+<html>
+    <head>
+        <title>LITReview</title>
+        <link rel="stylesheet" href="{%static 'styles_login.css'%}"/>  
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="{%static 'script.js'%}"></script> 
+    </head>    
+    <body>
+        <div class="container">
+            <h1>LITReview</h1>
+            <nav>
+              <ul>
+                <li><a href="{% url 'flux' %}">Flux</a></li>
+                <li><a href="{% url 'mes-posts' %}">Posts</a></li>
+                <li><a href="{% url 'available_users' %}">Abonnements</a></li>
+                <li><a href="{% url 'logout' %}">Se déconnecter</a></li>
+              </ul>
+            </nav>
+          </div>
+        <div class="scene">
+            {%block content %}{%endblock%}
+        </div>
+    </body>
+
+</html>        
+

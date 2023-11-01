@@ -1,0 +1,9 @@
+{% if subscription_successful %}
+    <div class="alert alert-success">
+        Vous êtes maintenant abonné à {{ user_to_subscribe.username }}.
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        Vous êtes déjà abonné à {{ user_to_subscribe.username }}.
+    </div>
+{% endif%}

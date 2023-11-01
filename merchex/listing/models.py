@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 
 
@@ -10,6 +11,12 @@ class Ticket(models.Model):
     image = models.ImageField(upload_to="media/", null=True, blank=True)
     visibility = models.BooleanField(default=True)
     time_created = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def can_create_review(self):
+        User = get_user_model()
+        current_user = User.objects.get(username=self.user.username)
+        return self.user != current_user
 
 
 class Review(models.Model):
@@ -23,7 +30,9 @@ class Review(models.Model):
     visibility = models.BooleanField(default=True)
     time_created = models.DateTimeField(auto_now_add=True)
 
-
+    class Meta:
+        unique_together = ('ticket', 'user',)
+        
 class UserFollows(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="following_users"

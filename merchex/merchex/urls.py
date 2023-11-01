@@ -28,6 +28,7 @@ urlpatterns = [
     path('app/flux', views.flux, name='flux'),
     path('app/abonnement', views.subscription),
     path('app/creation-ticket', views.create_ticket, name='creation-ticket'),
+    path('app/nouvelle-critique-2/<int:ticket_id>/', views.nouvelle_critique_2, name='nouvelle-critique-2'),
     path('app/nouvelle-critique', views.create_combined, name='nouvelle-critique'),
     path('app/mes-posts', views.my_posts, name='mes-posts'),
     path('app/modifier-critique', views.modify_review),
