@@ -12,17 +12,19 @@
     {% for post in posts %} <!--boucle qui affiche les tickets-->
         <div class="ticket"> <!--bloc qui contient les tickets-->
             <h3>{{ post.title }}</h3> <!--titre du ticket-->
+            <p class="user">Par {{ post.user }}</p> <!--utilisateur qui a créé le ticket-->
             <p class="date">{{ post.time_created }}</p> <!--date de création du ticket-->
             <p class="description">{{ post.description }}</p> <!--description du ticket-->
             {% if post.image %} <!--image du ticket-->
                 <img src="{{ post.image.url }}" alt="{{ post.title }}"> 
             {% endif %}
-            {% if post.can_create_review %} <!--bouton pour créer une critique-->
+            {% if post.user != request.user and not post.review_set.exists %}
                 <a href="{% url 'nouvelle-critique-2' post.id %}" class="btn btn-primary">Créer une critique</a> 
             {% endif %}
             {% for review in post.review_set.all %} <!--boucle qui affiche les critiques-->
                 <div class="review"> <!--bloc qui contient les critiques-->
                     <h4>Critique : {{ review.headline }}</h4> <!--titre de la critique-->
+                    <p class="user">Par {{ review.user }}</p> <!--utilisateur qui a créé la critique-->
                     <p>{{ review.body }}</p> <!--commentaire de la critique-->
                     <p>{{ review.rating }}</p> <!--note de la critique-->
                     <p class="date">{{ review.time_created }}</p> <!--date de création de la critique-->

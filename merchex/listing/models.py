@@ -13,10 +13,7 @@ class Ticket(models.Model):
     time_created = models.DateTimeField(auto_now_add=True)
     critique = models.BooleanField(default=False)
 
-    @property
-    def can_create_review(self):
-        User = get_user_model()
-        current_user = User.objects.get(username=self.user.username)
+    def can_create_review(self, current_user):
         return self.user != current_user
 
 

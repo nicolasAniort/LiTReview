@@ -78,6 +78,9 @@ def flux(request):
         chain(tickets), key=lambda post: post.time_created, reverse=True
     )
 
+    for post in posts:
+        post.can_create_review = post.user != request.user and not post.review_set.exists()
+
     return render(request, "flux.html", context={"posts": posts})
 
 
