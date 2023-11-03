@@ -277,3 +277,28 @@ div.search-form button {
 div.search-form button:hover {
     background-color: #45a049;
 }
+/*FLUX*/
+
+.flux .ticket {
+    border-color: white;
+    border-style: double;
+    margin: 10px 40px 10px 10px;
+}
+.flux .ticket img{
+    max-width: 150px;
+    max-height: auto;
+    margin-left: 20px;
+    display:block !important;   
+}
+
+.flux .review {
+    padding: 10px;
+    margin-left: 20px;
+    /*border: solid;
+    border-width: 2px;
+    border-color: #000;*/
+    background-color: #f0f0f0;
+}
+.flux .ticket .date{
+    text-align: right;
+}

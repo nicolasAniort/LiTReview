@@ -1,33 +1,34 @@
 {% extends "base_login.html" %}
 {% load static %}
 {%block content%}
-<div class="flux">
-    <div class="btn-create-ticket">
+<div class="flux"> <!-- bloc qui contient les tickets et les critiques -->
+    <div class="btn-create-ticket"> <!--# bouton pour créer un ticket -->
         <a href="{% url 'creation-ticket' %}" class="btn btn-primary">Demander une critique</a>
     </div>
-    <div class="btn-create-critique">
+    <div class="btn-create-critique"> <!--bouton pour créer une critique-->
         <a href="{% url 'nouvelle-critique' %}" class="btn btn-primary">Créer une critique</a>
     </div>
-        <h2>Flux</h2>
-        {% for ticket in tickets %}
-    <div class="ticket">
-        <h3>{{ ticket.title }}</h3>
-        <p>{{ ticket.description }}</p>
-        {% if ticket.image %}
-            <img src="{{ ticket.image.url }}" alt="{{ ticket.title }}">
-        {% endif %}
-        <p class="date">{{ ticket.time_created }}</p>
-        {% if ticket.can_create_review %}
-            <a href="{% url 'nouvelle-critique-2' ticket.id %}" class="btn btn-primary">Créer une critique</a>
-        {% endif %}
-    </div>
-{% endfor %}
-    {% for post in posts %}
-        {% if post.content_type == 'TICKET' %}
-            {% include 'ticket_snippet.html' %}
-        {% elif post.content_type == 'REVIEW' %}
-            {% include 'review_snippet.html' %}
-        {% endif %}
-    {% endfor %} 
+    <h2>Flux</h2><!--titre du flux-->
+    {% for post in posts %} <!--boucle qui affiche les tickets-->
+        <div class="ticket"> <!--bloc qui contient les tickets-->
+            <h3>{{ post.title }}</h3> <!--titre du ticket-->
+            <p class="date">{{ post.time_created }}</p> <!--date de création du ticket-->
+            <p class="description">{{ post.description }}</p> <!--description du ticket-->
+            {% if post.image %} <!--image du ticket-->
+                <img src="{{ post.image.url }}" alt="{{ post.title }}"> 
+            {% endif %}
+            {% if post.can_create_review %} <!--bouton pour créer une critique-->
+                <a href="{% url 'nouvelle-critique-2' post.id %}" class="btn btn-primary">Créer une critique</a> 
+            {% endif %}
+            {% for review in post.review_set.all %} <!--boucle qui affiche les critiques-->
+                <div class="review"> <!--bloc qui contient les critiques-->
+                    <h4>Critique : {{ review.headline }}</h4> <!--titre de la critique-->
+                    <p>{{ review.body }}</p> <!--commentaire de la critique-->
+                    <p>{{ review.rating }}</p> <!--note de la critique-->
+                    <p class="date">{{ review.time_created }}</p> <!--date de création de la critique-->
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
 </div>    
-    {%endblock%}    
+{%endblock%}

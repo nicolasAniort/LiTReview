@@ -35,10 +35,10 @@ class TicketForm(forms.ModelForm):
         image = cleaned_data.get("image")
         if not image:
             # Si l'utilisateur n'a pas fourni d'image, ajoutez une image par défaut.
-            # default_image_path = None
+            default_image_path = None
             if settings.STATIC_ROOT:
                 default_image_path = os.path.join(settings.STATIC_ROOT, "default", "default_ticket_image.png")
-                print(default_image_path)
+                print("default_image_path: ", default_image_path)
             if default_image_path and os.path.exists(default_image_path):
                 print("default image exists")
                 with open(default_image_path, "rb") as f:

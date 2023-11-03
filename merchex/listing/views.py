@@ -3,12 +3,11 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from listing.forms import SignUpForm, ReviewForm, TicketForm
+from listing.forms import SignUpForm, ReviewForm, TicketForm, UserSearchForm
 from .models import Ticket, Review, UserFollows, Subscription, User
 from itertools import chain
 from django.db import IntegrityError
 from django.db.models import CharField, Value
-from .forms import UserSearchForm, ReviewForm
 from django.http import JsonResponse, HttpResponse
 
 # CONNEXION / INSCRIPTION / DECONNEXION
@@ -71,15 +70,28 @@ un nouvel utilisateur est créé et connecté, puis redirigé vers le flux."""
 def flux(request):
     reviews = get_users_viewable_reviews(request)
     reviews = reviews.annotate(content_type=Value("REVIEW", CharField()))
-
     tickets = get_users_viewable_tickets(request)
     tickets = tickets.annotate(content_type=Value("TICKET", CharField()))
 
     posts = sorted(
-        chain(reviews, tickets), key=lambda post: post.time_created, reverse=True
+        # chain(reviews, tickets), key=lambda post: post.time_created, reverse=True
+        chain(tickets), key=lambda post: post.time_created, reverse=True
     )
 
     return render(request, "flux.html", context={"posts": posts})
+
+
+"""def flux(request):
+    reviews = Review.objects.filter(user=request.user).annotate(content_type=Value("REVIEW", CharField()))
+    # Récupérer les tickets de l'utilisateur actuellement connecté
+    tickets = Ticket.objects.filter(user=request.user).prefetch_related('review_set').annotate(content_type=Value("TICKET", CharField()))
+    # Récupérer les utilisateurs suivis par l'utilisateur actuellement connecté
+    posts = sorted(
+        chain(reviews, tickets), key=lambda post: post.time_created, reverse=True) 
+    # Cette ligne de code permet de trier les posts par date de création
+    print(posts)
+    return render(request, "flux.html", context={"review": reviews, "ticket": tickets})
+"""
 
 
 """Cette vue génère le flux d'activité de l'utilisateur. 
@@ -163,7 +175,7 @@ def create_ticket(request):
         ticket_form = TicketForm()
 
     context = {"ticket_form": ticket_form}
-    return render(request, "create_ticket.html", context)
+    return render(request, "creation-ticket.html", context)
     """ Redirigez vers la page de app/flux après avoir créé le ticket sinon rester sur la page 
         app/nouvelle-critique/ 
     """
@@ -246,6 +258,7 @@ def my_posts(request):
 connecté."""
 
 # CRITIQUE
+
 @login_required
 def nouvelle_critique_2(request, ticket_id):
     ticket = get_object_or_404(Ticket, id=ticket_id)
@@ -324,6 +337,13 @@ def create_combined(request):
         ticket_form = TicketForm(request.POST, request.FILES)
         review_form = ReviewForm(request.POST)
         if ticket_form.is_valid() and review_form.is_valid():
+            ticket = ticket_form.save(commit=False)
+            ticket.user = request.user
+            ticket.save()
+            
+            ticket = ticket_form.save(commit=False)
+            ticket.user = request.user
+            ticket.save()
             # Traitez les données des deux formulaires comme vous le souhaitez
             ticket_data = ticket_form.cleaned_data
             review_data = review_form.cleaned_data
@@ -382,7 +402,7 @@ def view_ticket(request, ticket_id):
 fonction de son ID. Elle récupère le ticket correspondant à l'ID 
 fourni et l'affiche. Si le ticket n'existe pas, elle renvoie une erreur 404."""
 
-# Abonnement
+# ABONNEMENT
 
 
 @login_required

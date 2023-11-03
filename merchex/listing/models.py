@@ -11,6 +11,7 @@ class Ticket(models.Model):
     image = models.ImageField(upload_to="media/", null=True, blank=True)
     visibility = models.BooleanField(default=True)
     time_created = models.DateTimeField(auto_now_add=True)
+    critique = models.BooleanField(default=False)
 
     @property
     def can_create_review(self):
