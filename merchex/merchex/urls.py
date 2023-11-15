@@ -25,25 +25,27 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accueil', views.home),
     path('inscription', views.registration),
+    # UTILISATEUR CONNECTE
     path('app/flux', views.flux, name='flux'),
-    path('app/abonnement', views.subscription),
+    path('app/mes-posts', views.my_posts, name='mes-posts'),
+    path('app/available_users/', views.available_users, name='available_users'),
+    # path('app/available_users/', views.subscribe_user, name="subscribe_user"),
+    path('accueil', auth_views.LogoutView.as_view(), name='logout'),
     path('app/creation-ticket', views.create_ticket, name='creation-ticket'),
     path('app/nouvelle-critique-2/<int:ticket_id>/', views.nouvelle_critique_2, name='nouvelle-critique-2'),
     path('app/nouvelle-critique', views.create_combined, name='nouvelle-critique'),
-    path('app/mes-posts', views.my_posts, name='mes-posts'),
     path('app/modifier-critique', views.modify_review),
     path('app/modifier-ticket/<int:ticket_id>/', views.modify_ticket, name='modifier-ticket'),
     path('delete-ticket/<int:ticket_id>/', views.delete_ticket, name='delete-ticket'),
-    path('accueil', auth_views.LogoutView.as_view(), name='logout'),
     path('view-review/<int:review_id>/', views.view_review, name='view_review'),
     path('ticket/<int:ticket_id>/', views.view_ticket, name='view_ticket'),
-    path('app/available_users/', views.available_users, name='available_users'),
     path('app/followers/', views.followers, name='followers'),
     path('follow/<int:user_id>/', views.follow, name='follow'),
     path('unfollow/<int:user_id>/', views.unfollow, name='unfollow'),
-    path('app/search_users/', views.search_users, name='search_users'),
-    path("app/subscribe_user/", views.subscribe_user, name="subscribe_user"),
+    # path('app/search_users/', views.search_users, name='search_users'),
+    path("subscribe/", views.subscribe_user, name="subscribe_user"),
     path('app/get_subscriptions/', views.get_subscriptions, name='get_subscriptions'),
+    
 ]
 
 if settings.DEBUG:

@@ -3,14 +3,14 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Ticket, Subscription, Review
+from .models import Ticket, Review
 import os
 
 
 # Formulaire d'inscription pour les utilisateurs
 class SignUpForm(UserCreationForm):
     # SignUpForm est un formulaire d'inscription pour les utilisateurs.
-    # Il hérite de UserCreationForm, qui fournit des champs de base tels 
+    # Il hérite de UserCreationForm, qui fournit des champs de base tels
     # que username, password1, et password2.
     class Meta:
         model = User
@@ -20,14 +20,14 @@ class SignUpForm(UserCreationForm):
 # Formulaire pour créer un nouveau ticket
 class TicketForm(forms.ModelForm):
     # TicketForm est un formulaire pour créer un nouveau ticket.
-    # Il est basé sur le modèle Ticket et inclut les champs 
+    # Il est basé sur le modèle Ticket et inclut les champs
     # title, description, et image.
     class Meta:
         model = Ticket
         fields = ["title", "description", "image"]
         labels = {
-            "title": "Titre du ticket",  # Personnalisation de l'étiquette 
-            #du champ 'title'
+            "title": "Titre du ticket",  # Personnalisation de l'étiquette
+            # du champ 'title'
         }
 
     def clean(self):
@@ -37,7 +37,9 @@ class TicketForm(forms.ModelForm):
             # Si l'utilisateur n'a pas fourni d'image, ajoutez une image par défaut.
             default_image_path = None
             if settings.STATIC_ROOT:
-                default_image_path = os.path.join(settings.STATIC_ROOT, "default", "default_ticket_image.png")
+                default_image_path = os.path.join(
+                    settings.STATIC_ROOT, "default", "default_ticket_image.png"
+                )
                 print("default_image_path: ", default_image_path)
             if default_image_path and os.path.exists(default_image_path):
                 print("default image exists")
@@ -46,6 +48,8 @@ class TicketForm(forms.ModelForm):
                 image = ContentFile(image_data, name="default_ticket_image.png")
                 cleaned_data["image"] = image
         return cleaned_data
+
+
 # Formulaire pour soumettre une critique
 
 
@@ -61,18 +65,19 @@ class ReviewForm(forms.ModelForm):
 
     class Meta:
         model = Review
-        fields = ['headline', 'rating', 'body']
+        fields = ["headline", "rating", "body"]
         labels = {
-            'headline': 'Titre de la critique',
-            'body': 'Commentaire',
+            "headline": "Titre de la critique",
+            "body": "Commentaire",
         }
         widgets = {
-            'body': forms.Textarea,
+            "body": forms.Textarea,
         }
+
 
 # Formulaire combiné de TicketForm et ReviewForm
 class CombinedForm(forms.Form):
-    # CombinedForm est un formulaire qui combine à la fois 
+    # CombinedForm est un formulaire qui combine à la fois
     # TicketForm et ReviewForm.
     # Cela peut être utile si vous avez besoin de soumettre à la fois
     # un ticket et une critique en même temps.
@@ -81,26 +86,28 @@ class CombinedForm(forms.Form):
 
 
 # Formulaire pour gérer les abonnements
-class SubscriptionForm(forms.ModelForm):
+class SubscriptionForm(forms.Form):
     # SubscriptionForm est un formulaire pour gérer les abonnements.
-    # Il est basé sur le modèle Subscription.
-    class Meta:
-        model = Subscription
-        fields = []
+    username = forms.CharField(label="Nom de l'utilisateur", max_length=150)
 
 
 # Formulaire de recherche d'utilisateurs
 class UserSearchForm(forms.Form):
-    search_query = forms.CharField(
-        label='Recherche d\'utilisateur',
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Commencez à taper le nom...'}),
-        required=False
+    searched_query = forms.CharField(
+        label="Recherche d'utilisateur",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Commencez à taper le nom...",
+            }
+        ),
+        required=False,
     )
 
     def search_users(self):
-        query = self.cleaned_data.get("search_query")
+        query = self.cleaned_data.get("searched_query")
         if query:
             # Effectuez la recherche d'utilisateurs en fonction du champ 'username'
             # Vous pouvez personnaliser cela pour rechercher d'autres champs si nécessaire
             return User.objects.filter(username__icontains=query)
-        return User.objects.none()
+        return None

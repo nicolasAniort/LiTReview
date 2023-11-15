@@ -1,0 +1,14 @@
+{% load static %}
+{% block content %}
+<ul>
+    {% for user in followed_users %}
+        <li>
+            {{ user }}
+            <form method="post" action="{% url 'unfollow' user.id %}">
+                {% csrf_token %}
+                <button type="submit">Se désabonner</button>
+            </form>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

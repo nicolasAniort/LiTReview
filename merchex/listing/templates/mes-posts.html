@@ -2,8 +2,13 @@
 {%load static%}
 
 {% block content %}
-<a href="{% url 'creation-ticket' %}" class="btn btn-primary">Créer un nouveau ticket</a>
-
+<div class="creer-ticket">
+    <form method="get" action="{% url 'creation-ticket' %}">
+        {% csrf_token %}
+        <input type="submit" value="Créer un nouveau ticket" class="btn btn-secondary">
+    </form>
+</div>
+<!--a href="{% url 'creation-ticket' %}" class="btn btn-primary">Créer un nouveau ticket</a-->
 <h2>Vos posts</h2>
     {% include 'list_ticket.html' %}
 {% endblock %}

@@ -3,11 +3,13 @@
 
 {% block content %}
     <h2>Créer une critique</h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ ticket_form.as_p }}
-        {{ review_form.as_p }}
-        <button type="submit">Envoyer</button>
-    </form>
+    <div class="critique">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ ticket_form.as_p }}
+            {{ review_form.as_p }}
+            <button type="submit">Envoyer</button>
+        </form>
+    </div>
 {% endblock %}
 

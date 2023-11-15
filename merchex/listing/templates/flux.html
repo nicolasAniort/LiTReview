@@ -2,13 +2,15 @@
 {% load static %}
 {%block content%}
 <div class="flux"> <!-- bloc qui contient les tickets et les critiques -->
-    <div class="btn-create-ticket"> <!--# bouton pour créer un ticket -->
-        <a href="{% url 'creation-ticket' %}" class="btn btn-primary">Demander une critique</a>
-    </div>
-    <div class="btn-create-critique"> <!--bouton pour créer une critique-->
-        <a href="{% url 'nouvelle-critique' %}" class="btn btn-primary">Créer une critique</a>
-    </div>
     <h2>Flux</h2><!--titre du flux-->
+    <div class="btn-contain">    
+        <div class="btn-create-ticket"> <!--# bouton pour créer un ticket -->
+            <a href="{% url 'creation-ticket' %}" class="btn btn-primary">Demander une critique</a>
+        </div>
+        <div class="btn-create-critique"> <!--bouton pour créer une critique-->
+            <a href="{% url 'nouvelle-critique' %}" class="btn btn-primary">Créer une critique</a>
+        </div>
+    </div>
     {% for post in posts %} <!--boucle qui affiche les tickets-->
         <div class="ticket"> <!--bloc qui contient les tickets-->
             <h3>{{ post.title }}</h3> <!--titre du ticket-->

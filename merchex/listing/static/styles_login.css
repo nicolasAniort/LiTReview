@@ -13,7 +13,14 @@ h1{
     margin-left: auto;
     margin-right:auto;
 }
-
+h2{
+    text-align: center;
+    align-items: center; /* Centre les éléments verticalement */
+    justify-content: center; /* Centre les éléments horizontalement */
+    width: 70%;
+    margin-left: auto;
+    margin-right:auto;
+}
 div.scene{
     align-items:center; /* Centre les éléments verticalement */
     border-color: black;
@@ -63,7 +70,7 @@ div.scene form{
     text-align:center;
 } 
 
-/*formulaire d'inscription*/
+/*formulaire d'inscription
 div.ticket label{
     text-align: left;
     margin: 3px;
@@ -105,7 +112,7 @@ div.ticket.button:focus {
     }
 div.ticket.button:active {
      background-color : rgb(255, 255, 255); 
-    }
+    }*/
 
 /*base2 - navigation */
 .container {
@@ -163,6 +170,7 @@ nav a.active {
     margin-left: 20px;
 }
 .list_ticket h2{
+    text-align: left;
     margin-left: 20px;
 }
 .list_ticket p{
@@ -172,15 +180,15 @@ nav a.active {
 .list_ticket p.date{
     text-align: right;
 }
-/*FORMULAIRE*/
+/*FORMULAIRE CRITIQUE*/
 /*formulaire de creation de critique*/
 div.critique ul{
     display: inline-flex;
     list-style-type: none;
 }
 /* Ajout de styles pour le formulaire de création de ticket */
-div.ticket form {
-    width: 60%; /* Largeur standard du formulaire */
+div.ticket form, div.critique form, div.modifier-ticket{
+    width: 70%; /* Largeur standard du formulaire */
     margin: auto;
     text-align: center;
     background-color: #f0f0f0;
@@ -189,7 +197,8 @@ div.ticket form {
     border-radius: 5px;
 }
 
-div.ticket label {
+div.ticket label, div.critique label, div.modifier-ticket{
+    width: auto;
     display: block;
     text-align: left;
     margin: 10px 0;
@@ -200,7 +209,13 @@ div.ticket label {
 
 div.ticket input[type="text"],
 div.ticket input[type="file"],
-div.ticket textarea {
+div.ticket textarea, 
+div.critique input[type="text"], 
+div.critique input[type="file"], 
+div.critique textarea,
+div.modifier-ticket input[type="text"],
+div.modifier-ticket input[type="file"],
+div.modifier-ticket textarea{
     width: 97%;
     padding: 10px;
     margin: 6px 6px;
@@ -208,7 +223,7 @@ div.ticket textarea {
     border-radius: 3px;
 }
 
-div.ticket button {
+div.ticket button, div.critique button, div.modifier-ticket button{
     background-color: #4CAF50;
     color: white;
     padding: 10px 20px;
@@ -218,8 +233,12 @@ div.ticket button {
     cursor: pointer;
 }
 
-div.ticket button:hover {
+div.ticket button:hover, div.critique button:hover, div.modifier-ticket button:hover{
     background-color: #45a049; /* Légèrement plus sombre lors du survol */
+}
+div.supprime-ticket, div.modif-ticket{
+    width: 10%; /* Largeur standard du formulaire */
+    display:inline-block;
 }
 
 /* Style pour les messages d'aide ou d'erreur */
@@ -233,7 +252,7 @@ span.helptext {
 }
 
 /* Styles pour les éléments de formulaire de type file (pour l'élément Image) */
-div.ticket input[type="file"] {
+div.ticket input[type="file"], div.critique input[type="file"] {
     font-size: 16px;
 }
 /* Styles pour le formulaire de recherche d'utilisateur */
@@ -278,6 +297,19 @@ div.search-form button:hover {
     background-color: #45a049;
 }
 /*FLUX*/
+.flux h2{
+    text-align: center;
+    align-items: center; /* Centre les éléments verticalement */
+    justify-content: center; /* Centre les éléments horizontalement */
+    width: 70%;
+    margin-left: auto;
+    margin-right:auto;
+}
+.flux div.btn-contain{
+    height: 20px;
+    margin: 10px 40px 20px 10px;
+    padding: 0px 0px 0px 0px;
+}
 
 .flux .ticket {
     border-color: white;
@@ -294,11 +326,138 @@ div.search-form button:hover {
 .flux .review {
     padding: 10px;
     margin-left: 20px;
-    /*border: solid;
-    border-width: 2px;
-    border-color: #000;*/
     background-color: #f0f0f0;
 }
 .flux .ticket .date{
     text-align: right;
+}
+.flux .ticket a.btn.btn-primary{
+    background-color: #4CAF50;
+    color: white;
+    padding: 0% 20px;
+    border: none;
+    border-radius: 3px;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 22px;
+    display:block !important;
+    float: right;
+    margin:-25px 4px 0px 0px;
+}
+.flux .btn-create-ticket{
+    display: block;
+    width: 50%;
+    margin: 10px 40px 10px 10px;
+    float: left;
+}
+.flux .btn-create-ticket a.btn.btn-primary{
+    background-color: #4CAF50;
+    color: white;
+    padding: 0% 20px;
+    border: none;
+    border-radius: 3px;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 22px; 
+    margin:0px 0px 0px 0px;
+}
+.flux .btn-create-critique{
+    display: block;
+    width: auto;
+    margin: 10px 40px 10px 10px;
+    float: right;
+}
+.flux .btn-create-critique a.btn.btn-primary{
+    background-color: #4CAF50;
+    color: white;
+    padding: 0% 20px;
+    border: none;
+    border-radius: 3px;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 22px;
+    margin:0px 0px 0px 0px;
+}
+/*POST*/
+.list_ticket a.btn.btn-secondary,
+ .list_ticket input.btn.btn-secondary {
+    background-color: #4CAF50;
+    color: white;
+    padding: 0% 20px;
+    border: none;
+    border-radius: 3px;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 22px;
+}
+div.creer-ticket {
+    width: 70%;
+    margin: auto;
+    text-align: center;
+    padding: 20px;
+    border-radius: 5px;
+}
+div.creer-ticket .btn.btn-secondary {
+    background-color: #4CAF50;
+    color: white;
+    padding: 0% 20px;
+    border: none;
+    border-radius: 3px;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 22px;
+}
+/*ABONNEMENTS*/
+
+div.abonnement{
+    width: 70%; /* Largeur standard du formulaire */
+    margin: auto;
+    text-align: left;
+    background-color: #f0f0f0;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    
+}
+div.abonnement form{
+    display: flex;
+    flex-wrap: nowrap;
+    align-content: stretch;
+    align-items: center;
+
+}
+div.subscriptions-section li{    
+    display: flex;
+    flex-wrap: nowrap;
+    align-content: stretch;
+    align-items: center;
+}
+div.abonnement p{
+    width:50%;
+    text-align: left;
+    float: left;
+}
+div.abonnement a.btn.btn-secondary,
+div.abonnement input.btn.btn-secondary, div.abonnement button{
+    height: 20px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 0% 20px;
+    border: none;
+    border-radius: 3px;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 22px;
+    float:inline-end;
+}
+
+div.creer-ticket .btn.btn-secondary {
+    background-color: #4CAF50;
+    color: white;
+    padding: 0% 20px;
+    border: none;
+    border-radius: 3px;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 22px;
 }

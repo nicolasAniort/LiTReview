@@ -47,7 +47,6 @@ class Subscription(models.Model):
     following = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="followers_subscriptions"
     )
-
-
-class Meta:
-    unique_together = ("user", "followed_user")
+    
+    class Meta:
+        unique_together = ("follower", "following")

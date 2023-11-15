@@ -3,10 +3,12 @@
 
 {% block content %}
   <h2>Modifier le ticket "{{ ticket.title }}"</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}  <!-- Affichez le formulaire avec les champs, vous pouvez personnaliser davantage si nécessaire -->
-    <button type="submit">Enregistrer les modifications</button>
-  </form>
-  <a href="{% url 'mes-posts' %}">Retour à la liste de vos tickets</a>
+  <div class="modifier-ticket">
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}  <!-- Affichez le formulaire avec les champs, vous pouvez personnaliser davantage si nécessaire -->
+      <button type="submit">Enregistrer les modifications</button>
+    </form>
+    <a href="{% url 'mes-posts' %}">Retour à la liste de vos tickets</a>
+  </div>
 {% endblock %}
