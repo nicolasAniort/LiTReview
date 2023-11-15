@@ -66,33 +66,46 @@ div.scene form{
     text-align:center;
 } 
 /*formulaire d'inscription*/
+div.signup-form {
+    width: 70%;
+    padding: 20px;
+    margin:auto;
+    text-align: center;
+    background-color: white;
+}
+div.signup-form form{
+    width: 50%;
+    margin: auto;
+    text-align: center;
+}
 div.signup-form label{
-    text-align: left;
     margin: 3px;
     font-weight: bold;
-    font-size: 22px;
+    text-align: left;
+    margin: 10px 0; /* Augmentation de la marge pour séparer les éléments */
+    font-size: 18px; /* Réduction de la taille de la police */
     color: #303030;
+    text-align: center;
 }
 span.helptext{
     line-height: 150%;
     display: block;
     text-align: center;
-    margin: 3px;
+    margin: 3px 3px 3px 3px;
     font-size: 15px;
-    font-size: 20px;
     font-weight: bold;
-    color: #ffffff;
-    border-color: white;
+    color: #4f4d4d;
+    border-color: #4f4d4d;
     border-style: solid;
 }
 div.signup-form ul{    
     list-style: none;
     text-align: left;
-    margin: 3px;
-    font-size: 20px;
+    margin: 3px 0px 3px 3px;
+    font-size: 14px;
     font-weight: bold;
-    color: #ffffff;
-    border-color: white;
+    color: #4f4d4d;
+    border-color: #4f4d4d;
     border-style: solid;
 }
 div.signup-form button{
@@ -108,6 +121,32 @@ div.signup-form.button:focus {
 div.signup-form.button:active {
      background-color : rgb(255, 255, 255); 
     }
+div.signup-form p {
+    margin-bottom: 20px; /* Augmentation de la marge entre les paragraphes */
+    margin-right: 20px;
+}
+
+div.signup-form input[type="text"],
+div.signup-form input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px; /* Réduction de la taille de la police */
+}
+
+div.signup-form button {
+    width: 100%;
+    padding: 15px;
+    font-size: 20px;
+    background-color: #2ECC71; /* Couleur de fond verte */
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+div.signup-form button:hover {
+    background-color: #27AE60; /* Changement de couleur au survol */
+}    
 /* Ajout des styles pour le formulaire de connexion */
 div.login-form label {
     text-align: left;
@@ -154,37 +193,5 @@ div.login-form button:hover {
     background-color: #27AE60; /* Changement de couleur au survol */
 }
 /* Ajout des styles pour le formulaire d'inscription */
-div.signup-form label {
-    text-align: left;
-    margin: 10px 0; /* Augmentation de la marge pour séparer les éléments */
-    font-weight: bold;
-    font-size: 18px; /* Réduction de la taille de la police */
-    color: #303030;
-}
 
-div.signup-form p {
-    margin-bottom: 20px; /* Augmentation de la marge entre les paragraphes */
-}
-
-div.signup-form input[type="text"],
-div.signup-form input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px; /* Réduction de la taille de la police */
-}
-
-div.signup-form button {
-    width: 100%;
-    padding: 15px;
-    font-size: 20px;
-    background-color: #2ECC71; /* Couleur de fond verte */
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-div.signup-form button:hover {
-    background-color: #27AE60; /* Changement de couleur au survol */
-}
 
