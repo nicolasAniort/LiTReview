@@ -5,7 +5,7 @@
     <p class="date">{{ post.time_created }}</p> <!-- date de création du post -->
     <p>{{ post.description }}</p>   <!-- description du post -->
     {% if post.content_type == "TICKET" and post.image %} <!-- si le post est un ticket et qu'il a une image -->
-            <img src="{{ post.image.url }}" alt="{{ post.title }}"> <!-- afficher l'image -->
+            <img src="{{ post.image.url }}" alt="couverture du livre {{ post.title }}"> <!-- afficher l'image -->
     {% endif %}
     {% if user.is_authenticated and post.user != user %} <!-- si l'utilisateur est connecté et que l'auteur du post n'est pas l'utilisateur -->
         <a href="{% url 'nouvelle-critique-2' post.id %}" class="btn btn-primary">Créer une critique</a> <!-- afficher le bouton pour créer une critique -->

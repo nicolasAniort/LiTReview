@@ -2,7 +2,7 @@
     <h3>{{ post.title }}</h3>
     <p class="date">{{ post.time_created }}</p>
     <p>{{ post.content }}</p>
-    <img src="{{ post.image.url }}" />   
+    <img src="{{ post.image.url }}" alt="couverture du livre {{ post.title }}"/>   
     {% if post.content_type == 'REVIEW' %}
         <a href="{% url 'view_review' post.id %}">Voir la critique complète</a>
     {% endif %}

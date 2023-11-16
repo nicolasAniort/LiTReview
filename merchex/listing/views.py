@@ -74,7 +74,6 @@ def flux(request):
     tickets = tickets.annotate(content_type=Value("TICKET", CharField()))
 
     posts = sorted(
-        # chain(reviews, tickets), key=lambda post: post.time_created, reverse=True
         chain(tickets),
         key=lambda post: post.time_created,
         reverse=True,

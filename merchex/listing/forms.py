@@ -52,7 +52,6 @@ class TicketForm(forms.ModelForm):
 
 # Formulaire pour soumettre une critique
 
-
 class ReviewForm(forms.ModelForm):
     RATING_CHOICES = [(str(i), i) for i in range(6)]
     rating = forms.ChoiceField(
