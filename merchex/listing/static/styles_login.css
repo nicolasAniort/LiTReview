@@ -70,50 +70,6 @@ div.scene form{
     text-align:center;
 } 
 
-/*formulaire d'inscription
-div.ticket label{
-    text-align: left;
-    margin: 3px;
-    font-weight: bold;
-    font-size: 22px;
-    color: #303030;
-}
-span.helptext{
-    line-height: 150%;
-    display: block;
-    text-align: center;
-    margin: 3px;
-    font-size: 15px;
-    font-size: 20px;
-    font-weight: bold;
-    color: #ffffff;
-    border-color: white;
-    border-style: solid;
-}
-div.ticket ul{    
-    list-style: none;
-    text-align: left;
-    margin: 3px;
-    font-size: 20px;
-    font-weight: bold;
-    color: #ffffff;
-    border-color: white;
-    border-style: solid;
-}
-div.ticket button{
-    font-size: 20px;
-    padding : 5px;
-}
-div.ticket.button:hover {
-     background-color : gray;
-    }
-div.ticket.button:focus {
-     border : 3px dotted rgb(153, 42, 238); 
-    }
-div.ticket.button:active {
-     background-color : rgb(255, 255, 255); 
-    }*/
-
 /*base2 - navigation */
 .container {
     display: flex;
@@ -240,6 +196,9 @@ div.supprime-ticket, div.modif-ticket{
     width: 10%; /* Largeur standard du formulaire */
     display:inline-block;
 }
+p.date {
+    text-align: right;
+}
 
 /* Style pour les messages d'aide ou d'erreur */
 span.helptext {
@@ -311,12 +270,12 @@ div.search-form button:hover {
     padding: 0px 0px 0px 0px;
 }
 
-.flux .ticket {
+.flux .ticket, .modify .ticket{
     border-color: white;
     border-style: double;
     margin: 10px 40px 10px 10px;
 }
-.flux .ticket img{
+.flux .ticket img, .modify .ticket img{
     max-width: 150px;
     max-height: auto;
     margin-left: 20px;
@@ -328,7 +287,7 @@ div.search-form button:hover {
     margin-left: 20px;
     background-color: #f0f0f0;
 }
-.flux .ticket .date{
+.flux .ticket .date, .modify .ticket .date {
     text-align: right;
 }
 .flux .ticket a.btn.btn-primary{

@@ -22,33 +22,44 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('accueil', views.home),
-    path('inscription', views.registration),
+    path("admin/", admin.site.urls),
+    path("accueil", views.home),
+    path("inscription", views.registration),
     # UTILISATEUR CONNECTE
-    #flux
-    path('app/flux', views.flux, name='flux'),
-    path('app/creation-ticket', views.create_ticket, name='creation-ticket'),
-    path('app/nouvelle-critique', views.create_combined, name='nouvelle-critique'),
-    path('app/nouvelle-critique-2/<int:ticket_id>/', views.nouvelle_critique_2, name='nouvelle-critique-2'),
-    #posts
-    path('app/mes-posts', views.my_posts, name='mes-posts'),
-    path('app/modifier-critique', views.modify_review),
-    path('app/modifier-ticket/<int:ticket_id>/', views.modify_ticket, name='modifier-ticket'),
-    path('delete-ticket/<int:ticket_id>/', views.delete_ticket, name='delete-ticket'),
-    #abonnements
-    path('app/available_users/', views.available_users, name='available_users'),
-    path('app/get_subscriptions/', views.get_subscriptions, name='get_subscriptions'),
-    path('app/followers/', views.followers, name='followers'),
-    path('view-review/<int:review_id>/', views.view_review, name='view_review'),
-    path('ticket/<int:ticket_id>/', views.view_ticket, name='view_ticket'),
-    path('follow/<int:user_id>/', views.follow, name='follow'),
-    path('unfollow/<int:user_id>/', views.unfollow, name='unfollow'),
+    # flux
+    path("app/flux", views.flux, name="flux"),
+    path("app/creation-ticket", views.create_ticket, name="creation-ticket"),
+    path("app/nouvelle-critique",
+         views.create_combined, name="nouvelle-critique"),
+    path(
+        "app/nouvelle-critique-2/<int:ticket_id>/",
+        views.nouvelle_critique_2,
+        name="nouvelle-critique-2",
+    ),
+    # posts
+    path("app/mes-posts", views.my_posts, name="mes-posts"),
+    path("app/modifier-critique", views.modify_review),
+    path(
+        "app/modifier-ticket/<int:ticket_id>/",
+        views.modify_ticket,
+        name="modifier-ticket",
+    ),
+    path("delete-ticket/<int:ticket_id>/", 
+         views.delete_ticket, name="delete-ticket"),
+    # abonnements
+    path("app/available_users/", views.available_users, name="available_users"),
+    path("app/get_subscriptions/", 
+         views.get_subscriptions, name="get_subscriptions"),
+    path("app/followers/", views.followers, name="followers"),
+    path("view-review/<int:review_id>/", views.view_review, name="view_review"),
+    path("ticket/<int:ticket_id>/", views.view_ticket, name="view_ticket"),
+    path("follow/<int:user_id>/", views.follow, name="follow"),
+    path("unfollow/<int:user_id>/", views.unfollow, name="unfollow"),
     path("subscribe/", views.subscribe_user, name="subscribe_user"),
     # deconnexion
-    path('accueil', auth_views.LogoutView.as_view(), name='logout'),
+    path("accueil", auth_views.LogoutView.as_view(), name="logout"),
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

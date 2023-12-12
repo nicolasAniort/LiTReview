@@ -2,14 +2,23 @@
 {%load static%}
 
 {% block content %}
-  <h2>{{ ticket.title }}</h2>
-  <p>{{ ticket.description }}</p>
+  
+<div class="modify">
+<h2>{{ ticket.title }}</h2>
+  <div class="ticket">
+    <p class="date">{{ ticket.time_created }}</p>
+    <img src="{{ ticket.image.url}}" alt="couverture du livre {{ ticket.title }}">
+    <p>{{ ticket.description }}</p>
+    
+  </div>
   <!-- Affichez ici d'autres détails sur le ticket si nécessaire -->
-
+</div>
   <h2>Créer une critique</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Soumettre</button>
-  </form>
+  <div class="critique">
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Soumettre</button>
+    </form>
+  </div>
 {% endblock %}
